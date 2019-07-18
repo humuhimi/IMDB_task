@@ -193,8 +193,10 @@ DNN_model.fit(X_train,y_train,epochs=10,batch_size=30)
 y_pred = DNN_model.predict(X_test,batch_size=5)
 # ２値に整形する
 
+# %precision
 print(y_pred.shape)
-y_pred[:10]
+mask = y_pred.astype('int') == 1
+y_pred.astype('int')[mask]
 
 
 # +
