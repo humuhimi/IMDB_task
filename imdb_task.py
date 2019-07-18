@@ -67,7 +67,7 @@ test_pos_df = mk_dataframe('../aclImdb/test/pos/')
 test_neg_df = mk_dataframe('../aclImdb/test/neg/')
 
 
-# + {"code_folding": [0]}
+# + {"code_folding": []}
 def shuffle_data(pos_data,neg_data):
     '''
     posとnegのdataframeを結合する
@@ -192,6 +192,9 @@ DNN_model.fit(X_train,y_train,epochs=10,batch_size=30)
 
 y_pred = DNN_model.predict(X_test,batch_size=5)
 # ２値に整形する
+score = DNN_model.evaluate(X_train,y_train)
+print(score)
+print(DNN_model.metrics_names)
 
 # %precision
 print(y_pred.shape)
