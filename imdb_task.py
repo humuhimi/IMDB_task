@@ -61,10 +61,10 @@ def mk_dataframe(path):
 # -
 
 # それぞれのデータを読み込む
-train_pos_df = mk_dataframe('Downloads/aclImdb/train/pos/')
-train_neg_df = mk_dataframe('Downloads/aclImdb/train/neg/')
-test_pos_df = mk_dataframe('Downloads/aclImdb/test/pos/')
-test_neg_df = mk_dataframe('Downloads/aclImdb/test/neg/')
+train_pos_df = mk_dataframe('../aclImdb/train/pos/')
+train_neg_df = mk_dataframe('../aclImdb/train/neg/')
+test_pos_df = mk_dataframe('../aclImdb/test/pos/')
+test_neg_df = mk_dataframe('../aclImdb/test/neg/')
 
 
 # + {"code_folding": [0]}
@@ -100,16 +100,97 @@ plt.show()
 
 # ## 前処理(labelを使う場合)
 
+# X,yにデータを分ける
 train_data = train_df.iloc[:,2:]
 train_X = train_df.iloc[:,3].values
 train_y = train_df.iloc[:,2].values
+print(train_y.shape)
 
+# 単語のダミーの作成
 from sklearn.feature_extraction.text import CountVectorizer
 CountVector = CountVectorizer()
 docs =  train_X
 bag = CountVector.fit_transform(docs)
 print(CountVector.vocabulary_)
 
-print(bag.toarray())
+# # ダミー化させた特徴量の抽出
+train_X_features = bag.toarray()
+print(train_X_features.shape)
+
+# ボキャブラリーの全体像
+vocab = CountVector.get_feature_names()
+print(vocab)
+
+# ボキャブラリーの数それぞれ
+dist = np.sum(train_X_features,axis=0)
+print(dist)
+
+print("count:word")
+for word,count in zip(vocab,dist):
+    print("{0}:{1}".format(count,word))
+
+# ## 機械学習モデル作成(labelを使う場合)
+
+# +
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score,roc_auc_score,auc
+
+X_train,X_test,y_train,y_test = train_test_split(train_X_features,train_y)
+
+clf = RandomForestClassifier(n_estimators=100)
+clf.fit(X_train,y_train)
+y_pred = clf.predict(X_test)
+accuracy_score = accuracy_score(y_test.astype('int'),y_pred.astype('int'))
+# auc_score = auc(y_test.astype('int'),y_pred.astype('int'))
+roc_auc_score = roc_auc_score(y_test.astype('int'),y_pred.astype('int'))
+print("accuracy_スコア:{0}\nroc_aucスコア:{1}\n".format(accuracy_score,roc_auc_score))
+# -
+
+# ## 深層学習モデル作成(label使う場合)
+
+# +
+# tensorflowとkerasのバージョン確認
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import tensorflow as tf
+from tensorflow.keras import layers
+
+print(tf.VERSION)
+print(tf.keras.__version__)
+
+# +
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(train_X_features,train_y)
+
+#深層学習モデル作成
+DNN_model = tf.keras.Sequential()
+# -
+
+# ユニット数が64の全結合を2つ入れる
+DNN_model.add(layers.Dense(64,activation='relu'))
+DNN_model.add(layers.Dense(64,activation='relu'))
+# 出力ユニット数が10のソフトマックス層を追加します：
+DNN_model.add(layers.Dense(10, activation='softmax'))
+# 活性化関数の適用
+layers.Dense(64, activation=tf.sigmoid)
+# 正則化
+layers.Dense(64, kernel_regularizer=tf.keras.regularizers.l1(0.01))
+layers.Dense(64,bias_regularizer=tf.keras.regularizers.l2(0.01))
+# カーネルをランダム直交行列で初期化した全結合層：
+layers.Dense(64, kernel_initializer='orthogonal')
+# バイアスベクトルを2.0で初期化した全結合層：
+layers.Dense(64, bias_initializer=tf.keras.initializers.constant(2.0))
+
+# モデル作成
+DNN_model.compile(optimizer=tf.train.AdamOptimizer(0.001),loss='categorical_crossentropy',metrics=['accuracy','roc_auc'])
+
+DNN_model.evaluate(X_train,y_train)
+
+
+
+
+
+
 
 

@@ -61,10 +61,10 @@ def mk_dataframe(path):
 # -
 
 # それぞれのデータを読み込む
-train_pos_df = mk_dataframe('Downloads/aclImdb/train/pos/')
-train_neg_df = mk_dataframe('Downloads/aclImdb/train/neg/')
-test_pos_df = mk_dataframe('Downloads/aclImdb/test/pos/')
-test_neg_df = mk_dataframe('Downloads/aclImdb/test/neg/')
+train_pos_df = mk_dataframe('../aclImdb/train/pos/')
+train_neg_df = mk_dataframe('../aclImdb/train/neg/')
+test_pos_df = mk_dataframe('../aclImdb/test/pos/')
+test_neg_df = mk_dataframe('../aclImdb/test/neg/')
 
 
 # + {"code_folding": [0]}
