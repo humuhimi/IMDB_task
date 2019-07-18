@@ -166,4 +166,4 @@ X_train,X_test,y_train,y_test = train_test_split(train_X_features,train_y)
 #深層学習モデル作成
 # -
 
-# ## Sequentialモデル
+#
