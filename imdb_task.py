@@ -164,6 +164,8 @@ print(tf.keras.__version__)
 # データ分割
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test = train_test_split(train_X_features,train_y)
+train_X_features.shape
+X_train.shape
 
 from tensorflow.keras import Input
 # 入力層の作成
@@ -179,7 +181,7 @@ model = tf.keras.Model(inputs=inputs,outputs=predictions)
 # コンパイルして学習方法を指定
 model.compile(optimizer=tf.train.RMSPropOptimizer(0.001),loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 # 5エポック分学習
-model.fit(train_X_features,train_y,batch_size=32,epochs=5)
+model.fit(X_train,y_train,batch_size=32,epochs=5)
 # train_y.shape,train_X_features.shape
 
 
@@ -193,3 +195,5 @@ y_test[:10]
 
 test_score = model.evaluate(X_test,y_test)
 print(test_score)
+
+
