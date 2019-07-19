@@ -77,13 +77,14 @@ def shuffle_data(pos_data,neg_data):
     
 
 
-# -
 
+# + {"code_folding": []}
 # 訓練用とテスト用データの作成
 train_df = shuffle_data(train_pos_df,train_neg_df)
 test_df = shuffle_data(test_pos_df,test_neg_df)
 train_df.shape,test_df.shape
 train_df.head(10)
+# -
 
 # 文章のサンプル表示
 HTML(train_df.text.iloc[0])
@@ -196,11 +197,18 @@ score = DNN_model.evaluate(X_train,y_train)
 print(score)
 print(DNN_model.metrics_names)
 
-# %precision
-print(y_pred.shape)
-mask = y_pred.astype('int') == 1
-y_pred.astype('int')[mask]
+predictions = np.round(DNN_model.predict(X_test))
+print(predictions[:100])
 
+
+# +
+
+pd.set_option('display.max_rows', 50)
+predictions[:10]
+# -
+
+correct = y_test.[:,newaxis]
+print(correct)
 
 # +
 from sklearn.metrics import accuracy_score,roc_auc_score,auc
