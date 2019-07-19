@@ -147,7 +147,7 @@ roc_auc_score = roc_auc_score(y_test.astype('int'),y_pred.astype('int'))
 print("accuracy_スコア:{0}\nroc_aucスコア:{1}\n".format(accuracy_score,roc_auc_score))
 # -
 
-# ## 深層学習モデル作成(label使う場合)
+# ## Keras API 深層学習モデル作成(label使う場合)
 
 # +
 # tensorflowとkerasのバージョン確認
@@ -158,12 +158,39 @@ from tensorflow.keras import layers
 
 print(tf.VERSION)
 print(tf.keras.__version__)
+# -
 
-# +
+# データ分割
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test = train_test_split(train_X_features,train_y)
 
-#深層学習モデル作成
-# -
+from tensorflow.keras import Input
+# 入力層の作成
+inputs = tf.keras.Input(shape=(74849,))
+# 中間層
+x = layers.Dense(64,activation='relu')(inputs)
+x = layers.Dense(64,activation='relu')(inputs)
+# 出力
+predictions = layers.Dense(10,activation='softmax')(x)
 
-#
+# モデル作成
+model = tf.keras.Model(inputs=inputs,outputs=predictions)
+# コンパイルして学習方法を指定
+model.compile(optimizer=tf.train.RMSPropOptimizer(0.001),loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+# 5エポック分学習
+model.fit(train_X_features,train_y,batch_size=32,epochs=5)
+# train_y.shape,train_X_features.shape
+
+
+train_score = model.evaluate(X_train,y_train)
+print(train_score)
+print(model.metrics_names)
+
+y_pred = np.round(model.predict(X_test,batch_size=5))
+y_pred[:10]
+y_test[:10]
+
+test_score = model.evaluate(X_test,y_test)
+print(test_score)
+
+
