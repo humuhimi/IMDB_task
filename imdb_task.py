@@ -150,8 +150,6 @@ print("accuracy_スコア:{0}\nroc_aucスコア:{1}\n".format(accuracy_score,roc
 
 # ## Keras API 深層学習モデル作成(label使う場合)
 
-<<<<<<< HEAD
-=======
 # +
 # tensorflowとkerasのバージョン確認
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -195,6 +193,3 @@ y_test[:10]
 
 test_score = model.evaluate(X_test,y_test)
 print(test_score)
-
-
->>>>>>> repair_branch
